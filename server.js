@@ -80,5 +80,5 @@ io.on("connection", (socket) => {
 });
 
 // 🚀 Start server on port 5000 (React usually runs on 3000)
-const PORT = 5000;
+const PORT = 8000;
 server.listen(PORT, () => console.log(`🌍 Server running on http://localhost:${PORT}`));
