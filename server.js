@@ -35,7 +35,7 @@ const io = new Server(server, {
 });
 
 // ✅ Allow HTTP requests from React frontend (port 3000)
-app.use(cors({ origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app/" }));
+app.use(cors({ origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app" }));
 
 app.use(bodyParser.json());
 
