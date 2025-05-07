@@ -211,7 +211,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Asnaif:mXxbGmWlKyXJn6
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => {
   console.error("❌ MongoDB Connection Error:", err);
-  process.exit(1); // Exit if DB connection fails
+  process.exit(1);
 });
 
 const db = mongoose.connection;
@@ -236,8 +236,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
   'https://bright-aliza-asnaif-bfedfd0f.koyeb.app',
   'http://localhost:3000',
-  'http://localhost:8000', // For direct API testing
-'https://vista-sensor-guardian.lovable.app' 
+  'http://localhost:8000',
+  'https://vista-sensor-guardian.lovable.app'
 ];
 
 // Enhanced CORS middleware
@@ -246,10 +246,10 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.some(allowedOrigin => 
-      origin === allowedOrigin || 
-      origin.startsWith(allowedOrigin.replace('https://', 'http://'))
-    ) {
+    if (allowedOrigins.some(allowedOrigin => {
+      return origin === allowedOrigin || 
+             origin.startsWith(allowedOrigin.replace('https://', 'http://'));
+    })) {
       return callback(null, true);
     }
     
@@ -259,7 +259,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 200 // For legacy browser support
+  optionsSuccessStatus: 200
 }));
 
 // Pre-flight requests
@@ -279,7 +279,6 @@ app.post("/api/sensors", async (req, res) => {
   try {
     const { temperature, humidity, air_quality } = req.body;
     
-    // Validate input
     if (typeof temperature !== 'number' || 
         typeof humidity !== 'number' || 
         typeof air_quality !== 'number') {
@@ -336,7 +335,7 @@ const io = new Server(server, {
     credentials: true
   },
   connectionStateRecovery: {
-    maxDisconnectionDuration: 2 * 60 * 1000, // 2 minutes
+    maxDisconnectionDuration: 2 * 60 * 1000,
     skipMiddlewares: true
   }
 });
