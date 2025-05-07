@@ -236,7 +236,8 @@ const server = http.createServer(app);
 const allowedOrigins = [
   'https://bright-aliza-asnaif-bfedfd0f.koyeb.app',
   'http://localhost:3000',
-  'http://localhost:8000' // For direct API testing
+  'http://localhost:8000', // For direct API testing
+'https://vista-sensor-guardian.lovable.app' 
 ];
 
 // Enhanced CORS middleware
