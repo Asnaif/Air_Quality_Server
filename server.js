@@ -116,7 +116,7 @@ const server = http.createServer(app);
 
 // Define allowed origins for CORS
 const allowedOrigins = [
-  'https://bright-aliza-asnaif-bfedfd0f.koyeb.app', // Production URL without trailing slash
+  'https://bright-aliza-asnaif-bfedfd0f.koyeb.app/', // Production URL without trailing slash
   'http://localhost:3000' // Local development URL
 ];
 
