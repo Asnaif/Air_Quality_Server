@@ -262,8 +262,8 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// Pre-flight requests
-app.options('*', cors());
+// // Pre-flight requests
+// app.options('*', cors());
 
 // Body parser middleware
 app.use(bodyParser.json());
