@@ -458,22 +458,22 @@ app.post("/api/sensors", async (req, res) => {
   }
 });
 
-app.get("/api/sensors", async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 100;
-    const data = await SensorData.find()
-      .sort({ timestamp: -1 })
-      .limit(limit);
+// app.get("/api/sensors", async (req, res) => {
+//   try {
+//     const limit = parseInt(req.query.limit) || 100;
+//     const data = await SensorData.find()
+//       .sort({ timestamp: -1 })
+//       .limit(limit);
       
-    res.status(200).json(data);
-  } catch (error) {
-    console.error("❌ Error fetching data:", error);
-    res.status(500).json({ 
-      error: "Failed to fetch data",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
+//     res.status(200).json(data);
+//   } catch (error) {
+//     console.error("❌ Error fetching data:", error);
+//     res.status(500).json({ 
+//       error: "Failed to fetch data",
+//       details: process.env.NODE_ENV === 'development' ? error.message : undefined
+//     });
+//   }
+// });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
