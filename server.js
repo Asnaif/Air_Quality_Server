@@ -1,87 +1,87 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const http = require("http");
-const { Server } = require("socket.io"); // WebSockets
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const path = require("path");
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const http = require("http");
+// const { Server } = require("socket.io"); // WebSockets
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
+// const path = require("path");
 
-mongoose.connect('mongodb+srv://Asnaif:mXxbGmWlKyXJn6AZ@cluster0.17mfx.mongodb.net/')
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ MongoDB Connection Error:", err));
+// mongoose.connect('mongodb+srv://Asnaif:mXxbGmWlKyXJn6AZ@cluster0.17mfx.mongodb.net/')
+//   .then(() => console.log("✅ MongoDB Connected"))
+//   .catch(err => console.log("❌ MongoDB Connection Error:", err));
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "❌ MongoDB Connection Error:"));
-db.once("open", () => console.log("✅ Connected to MongoDB Compass!"));
+// const db = mongoose.connection;
+// db.on("error", console.error.bind(console, "❌ MongoDB Connection Error:"));
+// db.once("open", () => console.log("✅ Connected to MongoDB Compass!"));
 
-const sensorSchema = new mongoose.Schema({
-  temperature: Number,
-  humidity: Number,
-  air_quality: Number,
-  timestamp: { type: Date, default: Date.now }
-}, { collection: "SensorData" });
+// const sensorSchema = new mongoose.Schema({
+//   temperature: Number,
+//   humidity: Number,
+//   air_quality: Number,
+//   timestamp: { type: Date, default: Date.now }
+// }, { collection: "SensorData" });
 
-const SensorData = mongoose.model("SensorData", sensorSchema);
+// const SensorData = mongoose.model("SensorData", sensorSchema);
 
-const app = express();
-const server = http.createServer(app);
+// const app = express();
+// const server = http.createServer(app);
 
-// ✅ Enable CORS for React frontend (usually on port 3000 during development)
-const io = new Server(server, {
-  cors: {
-    origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app/", // 🔁 Allow requests from React development server
-    methods: ["GET", "POST"]          // 🛠 Allow HTTP methods used by React
-  }
-});
+// // ✅ Enable CORS for React frontend (usually on port 3000 during development)
+// const io = new Server(server, {
+//   cors: {
+//     origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app/", // 🔁 Allow requests from React development server
+//     methods: ["GET", "POST"]          // 🛠 Allow HTTP methods used by React
+//   }
+// });
 
-// ✅ Allow HTTP requests from React frontend (port 3000)
-app.use(cors({ origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app" }));
+// // ✅ Allow HTTP requests from React frontend (port 3000)
+// app.use(cors({ origin: "https://bright-aliza-asnaif-bfedfd0f.koyeb.app" }));
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-// 📡 POST: Receive data from Arduino (or any sensor input source)
-app.post("/api/sensors", async (req, res) => {
-  const { temperature, humidity, air_quality } = req.body;
+// // 📡 POST: Receive data from Arduino (or any sensor input source)
+// app.post("/api/sensors", async (req, res) => {
+//   const { temperature, humidity, air_quality } = req.body;
 
-  // ⚠️ Ensure air_quality is present to avoid incomplete records
-  if (air_quality === undefined) {
-    return res.status(400).json({ error: "air_quality is missing in request" });
-  }
+//   // ⚠️ Ensure air_quality is present to avoid incomplete records
+//   if (air_quality === undefined) {
+//     return res.status(400).json({ error: "air_quality is missing in request" });
+//   }
 
-  try {
-    // ✅ Save new sensor reading in MongoDB
-    const newSensorData = new SensorData({ temperature, humidity, air_quality });
-    await newSensorData.save();
+//   try {
+//     // ✅ Save new sensor reading in MongoDB
+//     const newSensorData = new SensorData({ temperature, humidity, air_quality });
+//     await newSensorData.save();
 
-    // ⚡ Emit live update to all WebSocket-connected React clients
-    io.emit("new_data", newSensorData);
+//     // ⚡ Emit live update to all WebSocket-connected React clients
+//     io.emit("new_data", newSensorData);
 
-    res.status(200).json({ message: "Data stored successfully!", data: newSensorData });
-  } catch (error) {
-    console.error("❌ Error storing data:", error);
-    res.status(500).json({ error: "Failed to store data" });
-  }
-});
+//     res.status(200).json({ message: "Data stored successfully!", data: newSensorData });
+//   } catch (error) {
+//     console.error("❌ Error storing data:", error);
+//     res.status(500).json({ error: "Failed to store data" });
+//   }
+// });
 
-// 📊 GET: Fetch all stored sensor readings
-app.get("/api/sensors", async (req, res) => {
-  try {
-    const data = await SensorData.find().sort({ timestamp: -1 }); // 🕒 Sorted newest first
-    res.status(200).json(data); // 📦 Send to React frontend
-  } catch (error) {
-    console.error("❌ Error fetching data:", error);
-    res.status(500).json({ error: "Failed to fetch data" });
-  }
-});
+// // 📊 GET: Fetch all stored sensor readings
+// app.get("/api/sensors", async (req, res) => {
+//   try {
+//     const data = await SensorData.find().sort({ timestamp: -1 }); // 🕒 Sorted newest first
+//     res.status(200).json(data); // 📦 Send to React frontend
+//   } catch (error) {
+//     console.error("❌ Error fetching data:", error);
+//     res.status(500).json({ error: "Failed to fetch data" });
+//   }
+// });
 
-// ⚡ WebSocket setup: React frontend connects here for real-time updates
-io.on("connection", (socket) => {
-  console.log("⚡ New WebSocket Connection:", socket.id);
-});
+// // ⚡ WebSocket setup: React frontend connects here for real-time updates
+// io.on("connection", (socket) => {
+//   console.log("⚡ New WebSocket Connection:", socket.id);
+// });
 
-// 🚀 Start server on port 5000 (React usually runs on 3000)
-const PORT = 8000;
-server.listen(PORT, () => console.log(`🌍 Server running on http://localhost:${PORT}`));
+// // 🚀 Start server on port 5000 (React usually runs on 3000)
+// const PORT = 8000;
+// server.listen(PORT, () => console.log(`🌍 Server running on http://localhost:${PORT}`));
 
 // const express = require("express");
 // const mongoose = require("mongoose");
@@ -486,3 +486,132 @@ server.listen(PORT, () => console.log(`🌍 Server running on http://localhost:$
 // app.listen(PORT, () => {
 //   console.log(`🌍 Server running on port ${PORT}`);
 // });
+
+const express = require("express");
+const mongoose = require("mongoose");
+const http = require("http");
+const { Server } = require("socket.io");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const path = require("path");
+
+// Database connection
+mongoose.connect('mongodb+srv://Asnaif:mXxbGmWlKyXJn6AZ@cluster0.17mfx.mongodb.net/', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.log("❌ MongoDB Connection Error:", err));
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "❌ MongoDB Connection Error:"));
+db.once("open", () => console.log("✅ Connected to MongoDB Compass!"));
+
+// Schema definition
+const sensorSchema = new mongoose.Schema({
+  temperature: Number,
+  humidity: Number,
+  air_quality: Number,
+  timestamp: { type: Date, default: Date.now }
+}, { collection: "SensorData" });
+
+const SensorData = mongoose.model("SensorData", sensorSchema);
+
+// Express app setup
+const app = express();
+const server = http.createServer(app);
+
+// CORS configuration - allow all origins during debugging
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins temporarily for debugging
+    methods: ["GET", "POST"]
+  }
+});
+
+// Configure CORS for Express to allow all origins during debugging
+app.use(cors({ origin: "*" }));
+
+// Configure body parsers
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // Add support for form data
+
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`📝 ${req.method} ${req.path}`);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  next();
+});
+
+// Routes
+app.get("/", (req, res) => {
+  res.send("Sensor API is running. Use /api/sensors to post data.");
+});
+
+// POST endpoint for sensor data
+app.post("/api/sensors", async (req, res) => {
+  console.log("📡 Received sensor data:", req.body);
+  
+  const { temperature, humidity, air_quality } = req.body;
+  
+  // Validate input
+  if (temperature === undefined || humidity === undefined || air_quality === undefined) {
+    console.log("⚠️ Missing required sensor data fields");
+    return res.status(400).json({ 
+      error: "Missing required fields", 
+      received: req.body,
+      required: ["temperature", "humidity", "air_quality"] 
+    });
+  }
+  
+  try {
+    // Save new sensor reading
+    const newSensorData = new SensorData({ 
+      temperature: parseFloat(temperature), 
+      humidity: parseFloat(humidity), 
+      air_quality: parseInt(air_quality) 
+    });
+    
+    await newSensorData.save();
+    console.log("✅ Data saved successfully:", newSensorData);
+    
+    // Emit live update
+    io.emit("new_data", newSensorData);
+    
+    res.status(200).json({ 
+      message: "Data stored successfully!", 
+      data: newSensorData 
+    });
+  } catch (error) {
+    console.error("❌ Error storing data:", error);
+    res.status(500).json({ error: "Failed to store data", details: error.message });
+  }
+});
+
+// GET endpoint for sensor data
+app.get("/api/sensors", async (req, res) => {
+  try {
+    const data = await SensorData.find().sort({ timestamp: -1 }).limit(100);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("❌ Error fetching data:", error);
+    res.status(500).json({ error: "Failed to fetch data", details: error.message });
+  }
+});
+
+// WebSocket setup
+io.on("connection", (socket) => {
+  console.log("⚡ New WebSocket Connection:", socket.id);
+  
+  socket.on("disconnect", () => {
+    console.log("🔌 Client disconnected:", socket.id);
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => {
+  console.log(`🌍 Server running on port ${PORT}`);
+  console.log(`📡 API endpoint: http://localhost:${PORT}/api/sensors`);
+});
