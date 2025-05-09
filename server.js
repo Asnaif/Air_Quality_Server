@@ -804,12 +804,5 @@ app.get("/api/firmware/latest", (req, res) => {
     });
 });
 
-        res.status(200).json({ success: true, message: "Email alert sent!" });
-    } catch (error) {
-        console.error("Error sending email:", error);
-        res.status(500).json({ success: false, error: "Failed to send email" });
-    }
-});
-
 // ✅ Start the Server
 app.listen(PORT, () => console.log(🚀 Server running on http://localhost:${PORT}));
