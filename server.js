@@ -618,7 +618,7 @@
 
 
 const express = require("express");
-const nodemailer = require("nodemailer");
+//const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
