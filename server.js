@@ -768,7 +768,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-Upload route (Dashboard -> Backend) with password verification
+//Upload route (Dashboard -> Backend) with password verification
 app.post("/api/firmware/upload", verifyFirmwarePassword, upload.single("firmware"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: "No firmware file uploaded" });
