@@ -755,54 +755,54 @@ const verifyFirmwarePassword = (req, res, next) => {
     next();
 };
 
-// Storage config for firmware files
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         const uploadPath = path.join(__dirname, "firmware");
-//         if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
-//         cb(null, uploadPath);
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, "firmware.bin"); // Always overwrite with latest firmware
-//     }
-// });
-// const upload = multer({ storage });
+Storage config for firmware files
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, "firmware");
+        if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath);
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        cb(null, "firmware.bin"); // Always overwrite with latest firmware
+    }
+});
+const upload = multer({ storage });
 
-// Upload route (Dashboard -> Backend) with password verification
-// app.post("/api/firmware/upload", verifyFirmwarePassword, upload.single("firmware"), (req, res) => {
-//     if (!req.file) {
-//         return res.status(400).json({ error: "No firmware file uploaded" });
-//     }
-//     res.status(200).json({ message: "✅ Firmware uploaded successfully" });
-// });
+Upload route (Dashboard -> Backend) with password verification
+app.post("/api/firmware/upload", verifyFirmwarePassword, upload.single("firmware"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No firmware file uploaded" });
+    }
+    res.status(200).json({ message: "✅ Firmware uploaded successfully" });
+});
 
-// // Serve firmware and delete it 1 minute after it's downloaded
-// app.get("/api/firmware/latest", (req, res) => {
-//     const firmwarePath = path.join(__dirname, "firmware", "firmware.bin");
+// Serve firmware and delete it 1 minute after it's downloaded
+app.get("/api/firmware/latest", (req, res) => {
+    const firmwarePath = path.join(__dirname, "firmware", "firmware.bin");
 
-//     if (!fs.existsSync(firmwarePath)) {
-//         return res.status(404).json({ error: "No firmware available" });
-//     }
+    if (!fs.existsSync(firmwarePath)) {
+        return res.status(404).json({ error: "No firmware available" });
+    }
 
-//     res.download(firmwarePath, "firmware.bin", (err) => {
-//         if (err) {
-//             console.error("❌ Error sending firmware:", err);
-//             return;
-//         }
+    res.download(firmwarePath, "firmware.bin", (err) => {
+        if (err) {
+            console.error("❌ Error sending firmware:", err);
+            return;
+        }
 
-//         console.log("✅ Firmware sent. Scheduling deletion in 1 seconds...");
+        console.log("✅ Firmware sent. Scheduling deletion in 1 seconds...");
 
-//         setTimeout(() => {
-//             fs.unlink(firmwarePath, (unlinkErr) => {
-//                 if (unlinkErr) {
-//                     console.error("❌ Error deleting firmware:", unlinkErr);
-//                 } else {
-//                     console.log("🗑 Firmware deleted after 1 seconds.");
-//                 }
-//             });
-//         }, 1000); // 1 seconds
-//     });
-// });
+        setTimeout(() => {
+            fs.unlink(firmwarePath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error("❌ Error deleting firmware:", unlinkErr);
+                } else {
+                    console.log("🗑 Firmware deleted after 1 seconds.");
+                }
+            });
+        }, 1000); // 1 seconds
+    });
+});
 
 // // ✅ Start the Server
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
