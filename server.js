@@ -755,7 +755,7 @@ const verifyFirmwarePassword = (req, res, next) => {
     next();
 };
 
-Storage config for firmware files
+//Storage config for firmware files
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, "firmware");
